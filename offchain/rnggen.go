@@ -19,11 +19,13 @@ func main() {
   x := big.NewInt(0)
   x.SetString("fff23423424234234234234ffffffffffff765456898765434567654323ff", 16)
   // this should be for i < some set parameter making computation take 60 seconds :(
-  for i := 0; i < 123; i++ {
+  for i := 0; i < 10; i++ {
   // x is the blockhash in our case
   // go's built in ModSqrt already uses tonelli-shanks algo for square rooting
   // it's the currently best know slow generation & fast verification function
-    x.ModSqrt(x, p)
+    z := big.NewInt(0)
+    z.ModSqrt(x, p)
+    x = z
     fmt.Println(x)
   }
 
