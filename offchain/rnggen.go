@@ -8,7 +8,7 @@ import (
 func main() {
 
   p := big.NewInt(0)
-  p.SetString("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16)
+  p.SetString("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f", 16)
   /* uncomment to check p = 3 mod 4 (it does)
   four := big.NewInt(4)
   pmod4 := big.NewInt(0)
