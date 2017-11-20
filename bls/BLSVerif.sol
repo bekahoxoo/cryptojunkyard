@@ -35,4 +35,32 @@ contract BLSVerif {
       else return false;
   }
   
+  // i should really be using arrays what am I doing
+  function pairingcheck(uint256 ax, uint256 ay, uint256 bx, uint256 by, uint256 ba, uint256 bb, 
+                        uint256 cx, uint256 cy, uint256 dx, uint256 dy, uint256 da, uint256 db)
+                        returns (bool) {
+                        
+      assembly {
+      // define pointer to memory
+      // https://ethereum.stackexchange.com/questions/9603/understanding-mload-assembly-function
+      let p := mload(0x40)
+      
+      // store data assembly ways :)
+      mstore(p, mload(bigarray))
+      // fixy fixy
+      mstore(add(p, 0x20), mload(add(bigarrayy, 0x20)))
+      mstore(add(p, 0x20), mload(add(bx, 0x20)))
+      mstore(add(p, 0x40), mload(add(nextbigarray, 0x20)))
+      // call ecmul precompile
+      let success := call(sub(gas, 2000), 0x08, 0, p, 0x60, p, 0x40)
+      // gas fiddling
+      switch success case 0 {
+        revert(p, 0x80)
+      }
+      // check what bool actually requires
+      mstore(boolean, mload(p))
+      mstore(add(boolean, 0x01), mload(add(p, 0x01)))
+      
+      }
+  
 }
