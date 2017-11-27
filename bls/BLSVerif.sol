@@ -29,38 +29,39 @@ contract BLSVerif {
 
       // using the pairing check precompile at address 8
       // do we assume non-degenerate? non-zero? yeah? :)
-      if (pairingcheck((sigmax, sigmay, g2xa, g2xb, g2ya, g2yb), (hx, hy, vxa, vxb, vya, vyb))) {
+      if (pairingcheck(sigmax, sigmay, g2x, g2y, g2a, g2b, hx, hy, vx, vy, va, vb)) {
           return true;
       }
       else return false;
   }
-  
+
   // i should really be using arrays what am I doing
-  function pairingcheck(uint256 ax, uint256 ay, uint256 bx, uint256 by, uint256 ba, uint256 bb, 
+  function pairingcheck(uint256 ax, uint256 ay, uint256 bx, uint256 by, uint256 ba, uint256 bb,
                         uint256 cx, uint256 cy, uint256 dx, uint256 dy, uint256 da, uint256 db)
-                        returns (bool) {
-                        
+                        returns (bool output) {
+
+      uint256[12] memory input;
+      input[0] = ax;
+      input[1] = ay;
+      input[2] = bx;
+      input[3] = by;
+      input[4] = ba;
+      input[5] = bb;
+      input[6] = cx;
+      input[7] = cy;
+      input[8] = dx;
+      input[9] = dy;
+      input[10] = da;
+      input[11] = db;
+
       assembly {
-      // define pointer to memory
-      // https://ethereum.stackexchange.com/questions/9603/understanding-mload-assembly-function
-      let p := mload(0x40)
-      
-      // store data assembly ways :)
-      mstore(p, mload(bigarray))
-      // fixy fixy
-      mstore(add(p, 0x20), mload(add(bigarrayy, 0x20)))
-      mstore(add(p, 0x20), mload(add(bx, 0x20)))
-      mstore(add(p, 0x40), mload(add(nextbigarray, 0x20)))
-      // call ecmul precompile
-      let success := call(sub(gas, 2000), 0x08, 0, p, 0x60, p, 0x40)
-      // gas fiddling
-      switch success case 0 {
-        revert(p, 0x80)
+        // call precompile
+        let success := call(sub(gas, 2000), 0x08, 0, input, 0x0180, output, 0x20)
+        // gas fiddling
+        switch success case 0 {
+          revert()
+        }
       }
-      // check what bool actually requires
-      mstore(boolean, mload(p))
-      mstore(add(boolean, 0x01), mload(add(p, 0x01)))
-      
-      }
-  
+      return output;
+
 }
