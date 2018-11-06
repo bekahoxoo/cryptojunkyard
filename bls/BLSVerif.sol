@@ -1,6 +1,6 @@
 /* This is actually very simple when pairing checks exist.
 
-h = H(m) with m the message to be signed
+h = inverse(H(m)), with m the message to be signed
 
 Sanity checks for h, h^x in G1 and g2, g2^x (= v) in G2 will be skipped for now.
 We could check they're all mod p (given below) but if they aren't the check will fail anyway.
@@ -8,11 +8,13 @@ We could check they're all mod p (given below) but if they aren't the check will
 All we actually need to do is check e(h^x, g2) = e(h, g2^x),
 with v = g2^x, and sigma = h^x, e(sigma, g2) = e(h, v)
 
+The precompile tests that e(a, b) = e(-c, d), so we need to send the ***inverse*** of H(m).
+
 Elements of G1 are (x, y), both 256 bit elements of F_q; and elements of G2 are (x + iy, a + ib),
 so 4 256 elements on F_q^2, with order
 p = 21888242871839275222246405745257275088696311157297823662689037894645226208583
 
-Security relies on aCDH (watch this cool video ;) https://youtu.be/F4x2kQTKYFY?t=37m46s)
+Security relies on aCDH (ref: https://youtu.be/F4x2kQTKYFY?t=37m46s)
 */
 
 contract BLSVerif {
