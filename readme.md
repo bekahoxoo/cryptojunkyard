@@ -1,13 +1,13 @@
 ### blockchain based rngs
 
-This isn't finished. None of it is. 
+Disclaimer that this should not be used for anything other than fun and no-funds-attached experimentation!
 
 There's a bunch of ways you can create a randomness beacon from a blockchain,
 depending on what adversarial model you're willing to assume (what proportion 
 of participants do you expect to behave honestly?) and what communication
 overhead you're willing to accept.
 
-#### BLS stuff
+#### BLS things
 
 BLS as a randomness beacon assumes that a threshold of parties (which can 
 be a tunable parameter, `t`) are willing to participate. This `t`th party will
@@ -26,7 +26,14 @@ BLS comes from [this](https://www.iacr.org/archive/asiacrypt2001/22480516.pdf)
 2001 paper by Boneh, Lynn, and Shacham. It's been cited ~3000 times and it's
 simple enough to read! I promise!
 
-#### 'Time lock' stuff
+You can also make people commit to their randomness before the actual random 
+shares are broadcast (for example by publishing the hash of the randomness 
+(and optionally a nonce), and attach some deposit to this commitment, meaning
+that parties only won't reveal if they have a huge stake in not revealing, bigger
+than their deposit. However, this also might penalise honest users with bad internet 
+connections.
+
+#### 'Time lock' things
 
 You can also assume that some computation is really hard to do and produces
 a random output that is very quick to verify as honestly generated. An example
