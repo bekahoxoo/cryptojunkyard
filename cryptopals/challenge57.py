@@ -2,6 +2,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from modint import chinese_remainder
 from functools import reduce
+from math import gcd
 import secrets
 import hashlib
 
@@ -13,8 +14,8 @@ def chinese_remainder(n, a):
         pp = prod // n_i
         ssum += a_i * mul_inv(pp, n_i) * pp
     return ssum % prod
- 
- 
+
+
 def mul_inv(a, b):
     b0 = b
     x0, x1 = 0, 1
@@ -25,8 +26,8 @@ def mul_inv(a, b):
         x0, x1 = x1 - q * x0, x0
     if x1 < 0: x1 += b0
     return x1
- 
- 
+
+
 def aes_encrypt(msg, key, iv):
         cipher = AES.new(key, AES.MODE_CBC, iv)
         return cipher.encrypt(pad(msg, AES.block_size))
@@ -82,8 +83,6 @@ class Alice():
                 return k
         return
 
-
-
 class Bob():
     # Receive p, g, q
     def receive_params(self, msg):
@@ -121,6 +120,7 @@ def step_one():
     h = pow(rr, (p - 1)//r, p)
     if h == 1:
         return step_one()
+    f.remove(r)
     return h, r
 
 def step_two(h, r):
@@ -130,7 +130,6 @@ def step_two(h, r):
 
 def step_three():
     msg = bob.send_b_msg()
-    print(msg)
     return msg
 
 def step_four(h, r, msg):
@@ -150,8 +149,6 @@ def step_five():
         vecr.append(r)
         product *= r
         if product > q:
-            print(veck)
-            print(vecr)
             return chinese_remainder(vecr, veck)
     return
 
@@ -164,7 +161,18 @@ def factor_upto(j, n=16):
     factors = []
     for i in range(3, 2**n):
         if (j % i == 0) and (j % i**2 != 0):
-            factors.append(i)
+            if factors == []:
+                factors.append(i)
+            coprime_with = 0
+            if i not in factors:
+                for a in factors:
+                    if gcd(i, a) == 1:
+                        coprime_with += 1
+                    if coprime_with == len(factors):
+                        factors.append(i)
+            else:
+                continue
+    print(factors)
     return factors
 
 f = factor_upto(j)
