@@ -84,8 +84,6 @@ class Alice():
         return
 
     def evil_verify_key(self, k):
-        print(self.B)
-        print(pow(self.g, k, self.p))
         assert self.B == pow(self.g, k, self.p)
         return
 
@@ -100,7 +98,6 @@ class Bob():
 
     def pk_gen(self):
         self.b = secrets.randbelow(self.q)
-        print(self.b)
         self.B = pow(self.g, self.b, self.p)
         return
 
@@ -161,7 +158,7 @@ def step_five():
 
 def factor_upto(j, n=16):
     factors = []
-    for i in range(3, 2**n):
+    for i in range(100, 2**n):
         if (j % i == 0) and (j % i**2 != 0):
             if factors == []:
                 factors.append(i)
@@ -174,7 +171,6 @@ def factor_upto(j, n=16):
                         factors.append(i)
             else:
                 continue
-    print(factors)
     return factors
 
 if __name__ == '__main__':
@@ -191,6 +187,5 @@ if __name__ == '__main__':
     bob.pk_gen()
 
     key = step_five() % q
-    print(key)
     eve.evil_verify_key(key)
 
